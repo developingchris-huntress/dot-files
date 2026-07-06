@@ -25,4 +25,5 @@
 
 alias ghweb="gh pr view --web"
 alias prweb="gh pr view --web"
-alias pr="gh pr view --web"
+# Removed: alias pr="gh pr view --web"
+# Now using the smart pr script in bin/ that detects GitHub vs GitLab

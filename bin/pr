@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#
+# Smart PR command that detects GitHub vs GitLab and uses the appropriate CLI tool
+# Defaults to "view --web" when no arguments are provided (fast open in browser)
+# Falls back to opening the repo page if no PR/MR exists
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    exit 1
+fi
+
+# Get the remote URL
+remote_url=$(git config --get remote.origin.url)
+
+if [ -z "$remote_url" ]; then
+    echo "Error: No remote origin found"
+    exit 1
+fi
+
+# Check if we should use default behavior
+use_default=false
+if [ $# -eq 0 ]; then
+    use_default=true
+    set -- view --web
+fi
+
+# Detect if it's GitHub or GitLab
+if echo "$remote_url" | grep -q "github.com"; then
+    # GitHub repository - use gh CLI
+    if ! command -v gh &> /dev/null; then
+        echo "Error: gh CLI not found. Install it with: brew install gh"
+        exit 1
+    fi
+    
+    if [ "$use_default" = true ]; then
+        # Try to open PR, fallback to repo page if no PR exists
+        if ! gh pr view --web 2>/dev/null; then
+            echo "No PR found for current branch, opening repository page..."
+            exec gh repo view --web
+        fi
+    else
+        exec gh pr "$@"
+    fi
+elif echo "$remote_url" | grep -q "gitlab.com"; then
+    # GitLab repository - use glab CLI
+    if ! command -v glab &> /dev/null; then
+        echo "Error: glab CLI not found. Install it with: brew install glab"
+        exit 1
+    fi
+    
+    if [ "$use_default" = true ]; then
+        # Try to open MR, fallback to repo page if no MR exists
+        if ! glab mr view --web 2>/dev/null; then
+            echo "No MR found for current branch, opening repository page..."
+            exec glab repo view --web
+        fi
+    else
+        exec glab mr "$@"
+    fi
+else
+    echo "Error: Unable to detect GitHub or GitLab from remote URL: $remote_url"
+    exit 1
+fi
