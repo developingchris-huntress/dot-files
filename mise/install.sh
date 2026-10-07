@@ -1,7 +1,8 @@
 #!/bin/sh
 #
 # mise manages language versions (ruby, node, ...). Everything pinned in
-# mise/mise.toml.symlink (linked to ~/.mise.toml) gets installed here.
+# mise/mise.xdg/config.toml (linked to ~/.config/mise) gets installed here,
+# plus any machine-specific tools in the gitignored conf.d/local.toml.
 #
 # This runs from `dot` right after homebrew, before the topic installers,
 # since those (like node/install.sh) expect mise and its languages to exist.
