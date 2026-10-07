@@ -87,3 +87,14 @@ autocmd('LspAttach', {
 })
 
 vim.cmd.colorscheme('vividchalk')
+
+-- neovide (the GUI): font from the old macvim setup, and the usual cmd keys
+if vim.g.neovide then
+  opt.guifont = 'Monaco:h15'
+  map('n', '<D-s>', ':w<CR>')
+  map('v', '<D-c>', '"+y')
+  map({ 'n', 'v' }, '<D-v>', '"+P')
+  map({ 'i', 'c' }, '<D-v>', '<C-R>+')
+  map('t', '<D-v>', [[<C-\><C-N>"+Pi]])
+  map('n', '<D-a>', 'ggVG')
+end
