@@ -91,6 +91,10 @@ vim.cmd.colorscheme('vividchalk')
 -- neovide (the GUI): font from the old macvim setup, and the usual cmd keys
 if vim.g.neovide then
   opt.guifont = 'Monaco:h15'
+  -- no sliding/trailing cursor, it jumps straight to where it's going
+  vim.g.neovide_cursor_animation_length = 0
+  vim.g.neovide_cursor_short_animation_length = 0
+  vim.g.neovide_cursor_trail_size = 0
   map('n', '<D-s>', ':w<CR>')
   map('v', '<D-c>', '"+y')
   map({ 'n', 'v' }, '<D-v>', '"+P')
